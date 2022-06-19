@@ -1,0 +1,13 @@
+{
+  "name": "find-unused-gauge-steps",
+  "version": "0.0.1",
+  "description": "Find unused steps in gauge & kotlin project",
+  "scripts": {
+    "exec": "zx ./find-unused-steps.mjs"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "zx": "^7.0.0"
+  }
+}
