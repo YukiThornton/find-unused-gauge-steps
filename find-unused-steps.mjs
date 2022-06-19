@@ -16,7 +16,7 @@ function createDefinition(stepName, pattern) {
 }
 
 function createStepNamePattern(name) {
-    return `^\\*\\s+${name.replaceAll(/\<.*?\>/g, "\.\+")}\\s*$`
+    return `^\\*\\s+${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\<.*?\>/g, "\.\+")}\\s*$`
 }
 
 function createDefinitions(stepNames) {
