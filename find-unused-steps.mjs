@@ -24,7 +24,7 @@ function createDefinitions(stepNames) {
 }
 
 function convertToStepNames(line) {
-    return createDefinitions(line.split(",").map(stepName => stepName.trim().replaceAll("\"", "")))
+    return createDefinitions(line.match(/\".*?\"/g).map(stepName => stepName.replaceAll("\"", "")))
 }
 
 async function findSteps(srcDir) {
@@ -33,6 +33,11 @@ async function findSteps(srcDir) {
 }
 
 async function findConcepts(specsDir) {
+    const result = await $`find ${specsDir} -name "*.cpt"`
+    if (result.stdout.trim().length == 0) {
+        return []
+    }
+
     const rawConcepts = await $`find ${specsDir} -name "*.cpt" | xargs cat | grep -oE '^\\#\\s+.*\\s*$'`
     return rawConcepts.stdout.trim().split("\n")
             .map(concept => concept.replaceAll('#', '').trim())
@@ -135,7 +140,7 @@ async function exec(projectDir) {
     printUnusedSteps(unusedSteps);
 
     const concepts = await findConcepts(specsDir);
-    const unusedConcepts = await findUnusedConcepts(concepts, specsDir);
+    const unusedConcepts = concepts.length > 0 ? await findUnusedConcepts(concepts, specsDir) : [];
     printUnusedConcepts(unusedConcepts);
 
     printSummary(steps, unusedSteps, concepts, unusedConcepts);
